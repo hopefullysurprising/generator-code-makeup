@@ -39,20 +39,20 @@ var feature_prettify_configuration_files_default = class extends Generator {
       `);
     }
   }
-  sortJestConfig() {
-    const jestConfigFilePath = this.destinationPath("jest.config.json");
-    if (this.fs.exists(jestConfigFilePath)) {
-      const jestConfigContent = this.fs.readJSON(jestConfigFilePath);
-      const sortedJestConfigContent = sortJson(jestConfigContent);
-      this.fs.writeJSON(jestConfigFilePath, sortedJestConfigContent);
-    }
-  }
   sortTsConfig() {
     const tsConfigFilePath = this.destinationPath("tsconfig.json");
     if (this.fs.exists(tsConfigFilePath)) {
       const tsConfigContent = this.fs.readJSON(tsConfigFilePath);
       const sortedTsConfigContent = sortJson(tsConfigContent);
       this.fs.writeJSON(tsConfigFilePath, sortedTsConfigContent);
+    }
+  }
+  sortJestConfig() {
+    const jestConfigFilePath = this.destinationPath("jest.config.json");
+    if (this.fs.exists(jestConfigFilePath)) {
+      const jestConfigContent = this.fs.readJSON(jestConfigFilePath);
+      const sortedJestConfigContent = sortJson(jestConfigContent);
+      this.fs.writeJSON(jestConfigFilePath, sortedJestConfigContent);
     }
   }
 };
