@@ -5,9 +5,11 @@ import {
   getDependencyInfoForInstalling,
 } from '../../utilities/dependenciesUtilities';
 import { logInfoMessage } from '../../utilities/loggingUtilities';
+import { GIT_KEEP_FILE_NAME } from '../../constants/serviceFileNamesAndPaths';
 
 const TYPESCRIPT_MODULE = 'es2022';
 const TYPESCRIPT_MODULE_RESOLUTION = 'bundler';
+const TYPESCRIPT_SOURCE_DIRECTORY = 'src';
 
 export default class extends Generator {
 
@@ -27,6 +29,18 @@ export default class extends Generator {
         {},
       );
       logInfoMessage(this, `Created ${this.typescriptConfigFilePath}`);
+    }
+  }
+
+  initiateSourceDirectory() {
+    const gitKeepRelativePath = TYPESCRIPT_SOURCE_DIRECTORY + '/' + GIT_KEEP_FILE_NAME;
+    const srcFolderGitKeepPath = this.destinationPath(gitKeepRelativePath);
+    if (!this.fs.exists(srcFolderGitKeepPath)) {
+      logInfoMessage(this, `
+        Creating folder for source code: ${TYPESCRIPT_SOURCE_DIRECTORY}.
+        Also, this folder will contain .gitkeep file to make sure it is not ignored by Git.
+      `);
+      this.fs.write(srcFolderGitKeepPath, '');
     }
   }
 

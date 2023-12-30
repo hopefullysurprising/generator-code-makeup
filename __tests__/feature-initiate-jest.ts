@@ -23,7 +23,7 @@ describe('initiating jest package', () => {
   });
 
   it('should create a folder for storing tests', () => {
-    result.fs.exists('__tests__');
+    expect(result.fs.exists('__tests__/.gitkeep')).toBeTruthy();
   });
 
   it('should setup jest transform with ts compiler', () => {

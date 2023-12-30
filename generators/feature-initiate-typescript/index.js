@@ -41,9 +41,13 @@ function getInfoMessage(message) {
   return chalk.green(formattedMessage);
 }
 
+// src/constants/serviceFileNamesAndPaths.ts
+var GIT_KEEP_FILE_NAME = ".gitkeep";
+
 // src/generators/feature-initiate-typescript/index.ts
 var TYPESCRIPT_MODULE = "es2022";
 var TYPESCRIPT_MODULE_RESOLUTION = "bundler";
+var TYPESCRIPT_SOURCE_DIRECTORY = "src";
 var feature_initiate_typescript_default = class extends Generator {
   typescriptConfigFilePath = "tsconfig.json";
   description = "Configure TypeScript";
@@ -58,6 +62,17 @@ var feature_initiate_typescript_default = class extends Generator {
         {}
       );
       logInfoMessage(this, `Created ${this.typescriptConfigFilePath}`);
+    }
+  }
+  initiateSourceDirectory() {
+    const gitKeepRelativePath = TYPESCRIPT_SOURCE_DIRECTORY + "/" + GIT_KEEP_FILE_NAME;
+    const srcFolderGitKeepPath = this.destinationPath(gitKeepRelativePath);
+    if (!this.fs.exists(srcFolderGitKeepPath)) {
+      logInfoMessage(this, `
+        Creating folder for source code: ${TYPESCRIPT_SOURCE_DIRECTORY}.
+        Also, this folder will contain .gitkeep file to make sure it is not ignored by Git.
+      `);
+      this.fs.write(srcFolderGitKeepPath, "");
     }
   }
   setModuleParameters() {

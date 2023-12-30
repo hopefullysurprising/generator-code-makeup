@@ -25,4 +25,8 @@ describe('initiating typescript package', () => {
     expect(devDependencies).toHaveProperty('typescript');
   });
 
+  it('should create a source code folder', () => {
+    expect(result.fs.exists('src/.gitkeep')).toBeTruthy();
+  });
+
 });

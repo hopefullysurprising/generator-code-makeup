@@ -1,4 +1,3 @@
-import fs from 'fs';
 import Generator from 'yeoman-generator';
 import _ from 'lodash';
 
@@ -8,6 +7,7 @@ import {
   getDependencyInfoForInstalling,
 } from '../../utilities/dependenciesUtilities';
 import { logInfoMessage } from '../../utilities/loggingUtilities';
+import { GIT_KEEP_FILE_NAME } from '../../constants/serviceFileNamesAndPaths';
 
 const TEST_SCRIPT_COMMAND = 'NODE_OPTIONS=--experimental-vm-modules jest --passWithNoTests';
 const JEST_EXTENSIONS_TO_TREAT_AS_ESM = [".ts"];
@@ -105,14 +105,16 @@ export default class extends Generator {
   }
 
   createTestsFolder() {
-    const testsFolderPath = this.destinationPath(JEST_TESTS_FOLDER);
-    if (!fs.existsSync(testsFolderPath)) {
+    const gitKeepRelativePath = JEST_TESTS_FOLDER + '/' + GIT_KEEP_FILE_NAME;
+    const testsFolderGitKeepPath = this.destinationPath(gitKeepRelativePath);
+    if (!this.fs.exists(testsFolderGitKeepPath)) {
       logInfoMessage(this, `
-        Creating tests folder: ${testsFolderPath}.
+        Creating tests folder: ${JEST_TESTS_FOLDER}.
         Using Jest default tests folder to be able to use TS project references in future: https://www.typescriptlang.org/docs/handbook/project-references.html.
         That\'s why we are using separate folder and not mixing in .spec files.
+        Also, this folder will contain .gitkeep file to make sure it is not ignored by Git.
       `);
-      fs.mkdirSync(testsFolderPath);
+      this.fs.write(testsFolderGitKeepPath, '');
     }
   }
 

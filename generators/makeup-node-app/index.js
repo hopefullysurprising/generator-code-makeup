@@ -311,9 +311,13 @@ function getDependencyInfoForInstalling(packageName) {
   };
 }
 
+// src/constants/serviceFileNamesAndPaths.ts
+var GIT_KEEP_FILE_NAME = ".gitkeep";
+
 // src/generators/feature-initiate-typescript/index.ts
 var TYPESCRIPT_MODULE = "es2022";
 var TYPESCRIPT_MODULE_RESOLUTION = "bundler";
+var TYPESCRIPT_SOURCE_DIRECTORY = "src";
 var feature_initiate_typescript_default = class extends Generator2 {
   typescriptConfigFilePath = "tsconfig.json";
   description = "Configure TypeScript";
@@ -328,6 +332,17 @@ var feature_initiate_typescript_default = class extends Generator2 {
         {}
       );
       logInfoMessage(this, `Created ${this.typescriptConfigFilePath}`);
+    }
+  }
+  initiateSourceDirectory() {
+    const gitKeepRelativePath = TYPESCRIPT_SOURCE_DIRECTORY + "/" + GIT_KEEP_FILE_NAME;
+    const srcFolderGitKeepPath = this.destinationPath(gitKeepRelativePath);
+    if (!this.fs.exists(srcFolderGitKeepPath)) {
+      logInfoMessage(this, `
+        Creating folder for source code: ${TYPESCRIPT_SOURCE_DIRECTORY}.
+        Also, this folder will contain .gitkeep file to make sure it is not ignored by Git.
+      `);
+      this.fs.write(srcFolderGitKeepPath, "");
     }
   }
   setModuleParameters() {
@@ -365,7 +380,6 @@ var feature_initiate_typescript_default = class extends Generator2 {
 };
 
 // src/generators/feature-initiate-jest/index.ts
-import fs2 from "fs";
 import Generator3 from "yeoman-generator";
 import _ from "lodash";
 var TEST_SCRIPT_COMMAND = "NODE_OPTIONS=--experimental-vm-modules jest --passWithNoTests";
@@ -447,14 +461,16 @@ var feature_initiate_jest_default = class extends Generator3 {
     );
   }
   createTestsFolder() {
-    const testsFolderPath = this.destinationPath(JEST_TESTS_FOLDER);
-    if (!fs2.existsSync(testsFolderPath)) {
+    const gitKeepRelativePath = JEST_TESTS_FOLDER + "/" + GIT_KEEP_FILE_NAME;
+    const testsFolderGitKeepPath = this.destinationPath(gitKeepRelativePath);
+    if (!this.fs.exists(testsFolderGitKeepPath)) {
       logInfoMessage(this, `
-        Creating tests folder: ${testsFolderPath}.
+        Creating tests folder: ${JEST_TESTS_FOLDER}.
         Using Jest default tests folder to be able to use TS project references in future: https://www.typescriptlang.org/docs/handbook/project-references.html.
         That's why we are using separate folder and not mixing in .spec files.
+        Also, this folder will contain .gitkeep file to make sure it is not ignored by Git.
       `);
-      fs2.mkdirSync(testsFolderPath);
+      this.fs.write(testsFolderGitKeepPath, "");
     }
   }
   addScriptToPackageJson() {
