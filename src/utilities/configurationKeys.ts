@@ -1,16 +1,18 @@
 import { CodeDistributionType } from "../constants/projectWideInformation";
 
+// Configuration keys should not use "." character in their names
+// because it will be treated as a path separator in the configuration file.
 export enum ConfigurationKey {
   // Profile configuration keys.
-  AUTHOR_NAME = 'author.name',
-  AUTHOR_EMAIL = 'author.email',
-  AUTHOR_URL = 'author.url',
+  AUTHOR_NAME = 'author_name',
+  AUTHOR_EMAIL = 'author_email',
+  AUTHOR_URL = 'author_url',
 
   // Project configuration keys.
-  CODE_DISTRIBUTION_TYPE = 'codeDistributionType',
+  CODE_DISTRIBUTION_TYPE = 'code_distribution_type',
 
   // Package.json configuration keys.
-  PACKAGE_NAME = 'package.name',
+  PACKAGE_NAME = 'package_name',
 }
 
 export enum ConfigurationStorageType {

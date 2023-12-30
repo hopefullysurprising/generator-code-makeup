@@ -96,10 +96,6 @@ async function getPackageJsonConfigurationValue(
   }
 
   const promptResult = await getPromptValue(generator, configurationKey, settings);
-
-  generator.packageJson.set(settings.packageJsonKeyPath, promptResult);
-  generator.packageJson.save();
-
   return promptResult;
 }
 

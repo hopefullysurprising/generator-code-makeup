@@ -30,6 +30,10 @@ describe('initiating npm package', () => {
       result.assertFileContent('LICENSE.md', 'Test license');
     });
 
+    it('should have name set in package.json', () => {
+      result.assertFileContent('package.json', /"name": "test-package"/);
+    });
+
   });
 
   describe('initiating a proprietary package', () => {

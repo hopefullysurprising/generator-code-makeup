@@ -59,23 +59,23 @@ import fs from "fs";
 // src/utilities/configurationKeys.ts
 var CONFIGURATION_KEYS_INFO = {
   // Profile configuration keys.
-  ["author.name" /* AUTHOR_NAME */]: {
+  ["author_name" /* AUTHOR_NAME */]: {
     promptType: "input" /* INPUT */,
     promptMessage: "Input your name for 'author.name' field",
     storageType: "profile" /* PROFILE */
   },
-  ["author.email" /* AUTHOR_EMAIL */]: {
+  ["author_email" /* AUTHOR_EMAIL */]: {
     promptType: "input" /* INPUT */,
     promptMessage: "Input your email for 'author.email' field",
     storageType: "profile" /* PROFILE */
   },
-  ["author.url" /* AUTHOR_URL */]: {
+  ["author_url" /* AUTHOR_URL */]: {
     promptType: "input" /* INPUT */,
     promptMessage: "Input your URL for 'author.url' field",
     storageType: "profile" /* PROFILE */
   },
   // Project configuration keys.
-  ["codeDistributionType" /* CODE_DISTRIBUTION_TYPE */]: {
+  ["code_distribution_type" /* CODE_DISTRIBUTION_TYPE */]: {
     promptType: "list" /* LIST */,
     promptMessage: "What is the code distribution type for this project?",
     storageType: "project" /* PROJECT */,
@@ -91,7 +91,7 @@ var CONFIGURATION_KEYS_INFO = {
     ]
   },
   // Package.json configuration keys.
-  ["package.name" /* PACKAGE_NAME */]: {
+  ["package_name" /* PACKAGE_NAME */]: {
     promptType: "input" /* INPUT */,
     promptMessage: "Input your project name",
     storageType: "packageJson" /* PACKAGE_JSON */,
@@ -154,8 +154,6 @@ async function getPackageJsonConfigurationValue(generator, configurationKey, set
     return currentPackageJsonValue;
   }
   const promptResult = await getPromptValue(generator, configurationKey, settings);
-  generator.packageJson.set(settings.packageJsonKeyPath, promptResult);
-  generator.packageJson.save();
   return promptResult;
 }
 async function getProjectConfigurationValue(generator, configurationKey, promptSettings) {
@@ -203,11 +201,11 @@ var feature_initiate_npm_package_default = class extends Generator {
     this.generatorInfo.packageJsonExists = this.packageJson.existed;
   }
   async prompting() {
-    this.generatorInfo.packageName = await getConfigurationValue(this, "package.name" /* PACKAGE_NAME */);
-    this.generatorInfo.codeDistributionType = await getConfigurationValue(this, "codeDistributionType" /* CODE_DISTRIBUTION_TYPE */);
-    this.generatorInfo.authorName = await getConfigurationValue(this, "author.name" /* AUTHOR_NAME */);
-    this.generatorInfo.authorEmail = await getConfigurationValue(this, "author.email" /* AUTHOR_EMAIL */);
-    this.generatorInfo.authorUrl = await getConfigurationValue(this, "author.url" /* AUTHOR_URL */);
+    this.generatorInfo.packageName = await getConfigurationValue(this, "package_name" /* PACKAGE_NAME */);
+    this.generatorInfo.codeDistributionType = await getConfigurationValue(this, "code_distribution_type" /* CODE_DISTRIBUTION_TYPE */);
+    this.generatorInfo.authorName = await getConfigurationValue(this, "author_name" /* AUTHOR_NAME */);
+    this.generatorInfo.authorEmail = await getConfigurationValue(this, "author_email" /* AUTHOR_EMAIL */);
+    this.generatorInfo.authorUrl = await getConfigurationValue(this, "author_url" /* AUTHOR_URL */);
   }
   async initiatePackageJsonIfNeeded() {
     if (!this.generatorInfo?.packageJsonExists) {
