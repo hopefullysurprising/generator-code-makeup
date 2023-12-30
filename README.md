@@ -32,7 +32,7 @@ Also, this generator stores every answer to previously asked questions in one of
 
 1. Project itself (`package.json`, `tsconfig.json` and so on).
 1. [Yeoman project configuration storage](https://yeoman.io/authoring/storage).
-1. Profile-wide configuration storage (implemented by this generator itself - shared between all generator runs in all projects, such as `author.name`).
+1. Global configuration storage (It's a feature that is not well documented, I don't have a link. The values are shared between all generator runs in all projects, such as `author.name`).
 
 What storage to use depends on the configuration value entirely. **User input is always asked only once.**
 

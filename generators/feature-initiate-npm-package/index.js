@@ -27,7 +27,7 @@ var COMPANY_WIDE_INFORMATION = {
 function getUnambiguousTemplatePath(generator, templatePath) {
   const rawPath = generator.templatePath(templatePath);
   const paths = rawPath.split(":");
-  return paths.find((path2) => path2.includes(templatePath)) || rawPath;
+  return paths.find((path) => path.includes(templatePath)) || rawPath;
 }
 
 // src/utilities/loggingUtilities.ts
@@ -50,11 +50,6 @@ function getInfoMessage(message) {
   const formattedMessage = formattedMessageLines.join("\n");
   return chalk.green(formattedMessage);
 }
-
-// src/utilities/configurationUtilities.ts
-import os from "os";
-import path from "path";
-import fs from "fs";
 
 // src/utilities/configurationKeys.ts
 var CONFIGURATION_KEYS_INFO = {
@@ -129,23 +124,25 @@ async function getConfigurationValue(generator, configurationKey) {
       );
   }
 }
-async function getPromptValue(generator, name, promptSettings) {
-  const promptResult = await generator.prompt({
-    type: promptSettings.promptType,
-    name,
-    message: promptSettings.promptMessage,
-    choices: promptSettings.promptType === "list" /* LIST */ ? promptSettings.choices : void 0
-  });
+async function getPromptValue(generator, name, promptSettings, storage) {
+  const promptResult = await generator.prompt(
+    {
+      type: promptSettings.promptType,
+      name,
+      message: promptSettings.promptMessage,
+      choices: promptSettings.promptType === "list" /* LIST */ ? promptSettings.choices : void 0
+    },
+    storage
+  );
   return promptResult[name];
 }
 async function getProfileConfigurationValue(generator, configurationKey, promptSettings) {
-  const currentProfileConfiguration = getGeneratorSystemConfiguration(generator);
-  if (currentProfileConfiguration[configurationKey]) {
-    return currentProfileConfiguration[configurationKey];
-  }
-  const promptResult = await getPromptValue(generator, configurationKey, promptSettings);
-  currentProfileConfiguration[configurationKey] = promptResult;
-  writeGeneratorSystemConfiguration(currentProfileConfiguration);
+  const promptResult = await getPromptValue(
+    generator,
+    configurationKey,
+    promptSettings,
+    generator._globalConfig
+  );
   return promptResult;
 }
 async function getPackageJsonConfigurationValue(generator, configurationKey, settings) {
@@ -157,38 +154,13 @@ async function getPackageJsonConfigurationValue(generator, configurationKey, set
   return promptResult;
 }
 async function getProjectConfigurationValue(generator, configurationKey, promptSettings) {
-  const currentConfig = generator.config.get(configurationKey);
-  if (currentConfig) {
-    return currentConfig;
-  }
-  const promptResult = await getPromptValue(generator, configurationKey, promptSettings);
-  generator.config.set(configurationKey, promptResult);
+  const promptResult = await getPromptValue(
+    generator,
+    configurationKey,
+    promptSettings,
+    generator.config
+  );
   return promptResult;
-}
-var PROFILES_FOLDER = ".code_generator_profiles";
-var DEFAULT_PROFILE_NAME = "default.json";
-function getGeneratorSystemConfiguration(generator) {
-  const homeDirectory = os.homedir();
-  const profilesFolderPath = path.join(homeDirectory, PROFILES_FOLDER);
-  if (!fs.existsSync(profilesFolderPath) || !fs.lstatSync(profilesFolderPath).isDirectory()) {
-    fs.mkdirSync(profilesFolderPath);
-  }
-  const defaultProfilePath = path.join(profilesFolderPath, DEFAULT_PROFILE_NAME);
-  if (!fs.existsSync(defaultProfilePath) || !fs.lstatSync(defaultProfilePath).isFile()) {
-    fs.writeFileSync(defaultProfilePath, "{}");
-    logInfoMessage(generator, `
-      Created ${defaultProfilePath} for storing system-wide configuration.
-      Please, enable backup of this file in your backup software for smooth update experience.
-    `);
-  }
-  const fileContent = fs.readFileSync(defaultProfilePath, "utf8");
-  return JSON.parse(fileContent);
-}
-function writeGeneratorSystemConfiguration(newValue) {
-  const homeDirectory = os.homedir();
-  const profilesFolderPath = path.join(homeDirectory, PROFILES_FOLDER);
-  const defaultProfilePath = path.join(profilesFolderPath, DEFAULT_PROFILE_NAME);
-  fs.writeFileSync(defaultProfilePath, JSON.stringify(newValue));
 }
 
 // src/generators/feature-initiate-npm-package/index.ts

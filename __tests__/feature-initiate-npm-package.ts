@@ -15,6 +15,9 @@ describe('initiating npm package', () => {
         .withAnswers({
           [ConfigurationKey.PACKAGE_NAME]: 'test-package',
           [ConfigurationKey.CODE_DISTRIBUTION_TYPE]: CodeDistributionType.OPEN_SOURCE,
+          [ConfigurationKey.AUTHOR_NAME]: 'test-name',
+          [ConfigurationKey.AUTHOR_EMAIL]: 'test-email',
+          [ConfigurationKey.AUTHOR_URL]: 'test-url',
         })
         .withFiles({
           'unknown/templates/licenses/LGPL-3.0.md': 'Test license',
@@ -44,6 +47,9 @@ describe('initiating npm package', () => {
         .withAnswers({
           [ConfigurationKey.PACKAGE_NAME]: 'test-package',
           [ConfigurationKey.CODE_DISTRIBUTION_TYPE]: CodeDistributionType.PROPRIETARY,
+          [ConfigurationKey.AUTHOR_NAME]: 'test-name',
+          [ConfigurationKey.AUTHOR_EMAIL]: 'test-email',
+          [ConfigurationKey.AUTHOR_URL]: 'test-url',
         });
     });
 

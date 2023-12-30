@@ -1,6 +1,6 @@
 {
   "name": "generator-code-makeup",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Consolidates utilities required for code generation",
   "keywords": [
     "yeoman-generator"
