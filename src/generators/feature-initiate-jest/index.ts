@@ -5,15 +5,25 @@ import {
   NotImportedNpmPackage,
   NpmPackage,
   getDependencyInfoForInstalling,
-} from '../../utilities/dependenciesUtilities';
-import { logInfoMessage } from '../../utilities/loggingUtilities';
-import { GIT_KEEP_FILE_NAME } from '../../constants/serviceFileNamesAndPaths';
+} from '@/utilities/dependenciesUtilities';
+import { logInfoMessage } from '@/utilities/loggingUtilities';
+import { GIT_KEEP_FILE_NAME } from '@/constants/serviceFileNamesAndPaths';
+import { TYPESCRIPT_BASE_URL, TYPESCRIPT_PATHS } from '@/constants/systemDefaults';
 
 const TEST_SCRIPT_COMMAND = 'NODE_OPTIONS=--experimental-vm-modules jest --passWithNoTests';
 const JEST_EXTENSIONS_TO_TREAT_AS_ESM = [".ts"];
 const JEST_TRANSFORM = {
-  '^.+\\.(t|j)sx?$': '@swc/jest',
+  '^.+\\.(t|j)sx?$': [
+    "@swc/jest",
+    {
+      "jsc": {
+        "baseUrl": TYPESCRIPT_BASE_URL,
+        "paths": TYPESCRIPT_PATHS,
+      }
+    }
+  ]
 };
+
 const JEST_TESTS_FOLDER = '__tests__';
 
 export default class extends Generator {
@@ -88,7 +98,10 @@ export default class extends Generator {
     const jestTransform = jestConfig.transform || {};
     let jestTransformUpdated = false;
     for (const transformMatch of Object.keys(JEST_TRANSFORM)) {
-      if (!jestTransform[transformMatch]) {
+      if (
+        !jestTransform[transformMatch]
+        || JSON.stringify(jestTransform[transformMatch]) !== JSON.stringify(JEST_TRANSFORM[transformMatch])
+      ) {
         logInfoMessage(this, `Adding Jest config transform for ${transformMatch}: current value ${jestTransform[transformMatch]}`);
         jestTransform[transformMatch] = JEST_TRANSFORM[transformMatch];
         jestTransformUpdated = true;

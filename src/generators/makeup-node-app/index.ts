@@ -1,9 +1,9 @@
 import Generator from 'yeoman-generator';
 
-import FeatureInitiateNpmPackage from '../feature-initiate-npm-package';
-import FeatureInitiateTypescript from '../feature-initiate-typescript';
-import FeatureInitiateJest from '../feature-initiate-jest';
-import FeaturePrettifyConfigurationFiles from '../feature-prettify-configuration-files';
+import FeatureInitiateNpmPackage from '@/generators/feature-initiate-npm-package';
+import FeatureInitiateTypescript from '@/generators/feature-initiate-typescript';
+import FeatureInitiateJest from '@/generators/feature-initiate-jest';
+import FeaturePrettifyConfigurationFiles from '@/generators/feature-prettify-configuration-files';
 
 export default class extends Generator {
 

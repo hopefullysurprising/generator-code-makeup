@@ -1,5 +1,6 @@
 {
   "generator-code-makeup": {
-    "codeDistributionType": "openSource"
+    "codeDistributionType": "openSource",
+    "code_distribution_type": "openSource"
   }
 }

@@ -1,9 +1,9 @@
 import helpers, { result } from 'yeoman-test';
 
-import { CodeDistributionType } from '../src/constants/projectWideInformation';
+import { CodeDistributionType } from '@/constants/projectWideInformation';
 
-import InitiateNpmPackageGenerator from '../src/generators/feature-initiate-npm-package';
-import { ConfigurationKey } from '../src/utilities/configurationKeys';
+import InitiateNpmPackageGenerator from '@/generators/feature-initiate-npm-package';
+import { ConfigurationKey } from '@/utilities/configurationKeys';
 
 describe('initiating npm package', () => {
 

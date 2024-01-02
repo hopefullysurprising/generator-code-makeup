@@ -2,7 +2,7 @@ import Generator from 'yeoman-generator';
 import sortPackageJson from 'sort-package-json'
 import sortJson from 'sort-json';
 
-import { logInfoMessage } from '../../utilities/loggingUtilities';
+import { logInfoMessage } from '@/utilities/loggingUtilities';
 
 export default class extends Generator {
 

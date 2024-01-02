@@ -286,10 +286,16 @@ function getDependencyInfoForInstalling(packageName) {
 // src/constants/serviceFileNamesAndPaths.ts
 var GIT_KEEP_FILE_NAME = ".gitkeep";
 
+// src/constants/systemDefaults.ts
+var TYPESCRIPT_BASE_URL = ".";
+var TYPESCRIPT_SOURCE_DIRECTORY = "src";
+var TYPESCRIPT_PATHS = {
+  "@/*": [`${TYPESCRIPT_SOURCE_DIRECTORY}/*`]
+};
+
 // src/generators/feature-initiate-typescript/index.ts
 var TYPESCRIPT_MODULE = "es2022";
 var TYPESCRIPT_MODULE_RESOLUTION = "bundler";
-var TYPESCRIPT_SOURCE_DIRECTORY = "src";
 var feature_initiate_typescript_default = class extends Generator2 {
   typescriptConfigFilePath = "tsconfig.json";
   description = "Configure TypeScript";
@@ -349,6 +355,24 @@ var feature_initiate_typescript_default = class extends Generator2 {
       tsConfig
     );
   }
+  setupAbsolutePaths() {
+    const tsConfig = this.fs.readJSON(this.typescriptConfigFilePath);
+    if (!tsConfig.compilerOptions) {
+      tsConfig.compilerOptions = {};
+    }
+    if (!tsConfig.compilerOptions.baseUrl || tsConfig.compilerOptions.baseUrl !== TYPESCRIPT_BASE_URL) {
+      logInfoMessage(this, "Setting compilerOptions.baseUrl for absolute paths support in tsconfig.json");
+      tsConfig.compilerOptions.baseUrl = TYPESCRIPT_BASE_URL;
+    }
+    if (!tsConfig.compilerOptions.paths || JSON.stringify(tsConfig.compilerOptions.paths) !== JSON.stringify(TYPESCRIPT_PATHS)) {
+      logInfoMessage(this, 'Setting compilerOptions.paths for absolute paths support in tsconfig.json. Use "@/..." now');
+      tsConfig.compilerOptions.paths = TYPESCRIPT_PATHS;
+    }
+    this.fs.writeJSON(
+      this.typescriptConfigFilePath,
+      tsConfig
+    );
+  }
 };
 
 // src/generators/feature-initiate-jest/index.ts
@@ -357,7 +381,15 @@ import _ from "lodash";
 var TEST_SCRIPT_COMMAND = "NODE_OPTIONS=--experimental-vm-modules jest --passWithNoTests";
 var JEST_EXTENSIONS_TO_TREAT_AS_ESM = [".ts"];
 var JEST_TRANSFORM = {
-  "^.+\\.(t|j)sx?$": "@swc/jest"
+  "^.+\\.(t|j)sx?$": [
+    "@swc/jest",
+    {
+      "jsc": {
+        "baseUrl": TYPESCRIPT_BASE_URL,
+        "paths": TYPESCRIPT_PATHS
+      }
+    }
+  ]
 };
 var JEST_TESTS_FOLDER = "__tests__";
 var feature_initiate_jest_default = class extends Generator3 {
@@ -418,7 +450,7 @@ var feature_initiate_jest_default = class extends Generator3 {
     const jestTransform = jestConfig.transform || {};
     let jestTransformUpdated = false;
     for (const transformMatch of Object.keys(JEST_TRANSFORM)) {
-      if (!jestTransform[transformMatch]) {
+      if (!jestTransform[transformMatch] || JSON.stringify(jestTransform[transformMatch]) !== JSON.stringify(JEST_TRANSFORM[transformMatch])) {
         logInfoMessage(this, `Adding Jest config transform for ${transformMatch}: current value ${jestTransform[transformMatch]}`);
         jestTransform[transformMatch] = JEST_TRANSFORM[transformMatch];
         jestTransformUpdated = true;

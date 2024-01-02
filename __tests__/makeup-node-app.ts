@@ -1,9 +1,9 @@
 import helpers, { result } from 'yeoman-test';
 
-import { CodeDistributionType } from '../src/constants/projectWideInformation';
+import { CodeDistributionType } from '@/constants/projectWideInformation';
 
-import MakeupNodeAppGenerator from '../src/generators/makeup-node-app';
-import { ConfigurationKey } from '../src/utilities/configurationKeys';
+import MakeupNodeAppGenerator from '@/generators/makeup-node-app';
+import { ConfigurationKey } from '@/utilities/configurationKeys';
 
 describe('initiating a full node app', () => {
 

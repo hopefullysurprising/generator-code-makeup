@@ -1,11 +1,11 @@
 import Generator from 'yeoman-generator';
 
-import { CodeDistributionType } from '../../constants/projectWideInformation';
-import { COMPANY_WIDE_INFORMATION, PossibleLicenseFileNames } from '../../constants/companyWideInformation';
-import { getUnambiguousTemplatePath } from '../../utilities/templatePathUtilities';
-import { logInfoMessage } from '../../utilities/loggingUtilities';
-import { getConfigurationValue } from '../../utilities/configurationUtilities';
-import { ConfigurationKey } from '../../utilities/configurationKeys';
+import { CodeDistributionType } from '@/constants/projectWideInformation';
+import { COMPANY_WIDE_INFORMATION, PossibleLicenseFileNames } from '@/constants/companyWideInformation';
+import { getUnambiguousTemplatePath } from '@/utilities/templatePathUtilities';
+import { logInfoMessage } from '@/utilities/loggingUtilities';
+import { getConfigurationValue } from '@/utilities/configurationUtilities';
+import { ConfigurationKey } from '@/utilities/configurationKeys';
 
 interface NpmPackageGeneratorInfo {
   packageJsonExists: boolean;

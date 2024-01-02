@@ -7,7 +7,7 @@ import {
   ConfigurationValuePromptType,
   PromptConfigurationSettings,
   PackageJsonStorageConfigurationSettings,
-} from './configurationKeys';
+} from '@/utilities/configurationKeys';
 
 type ConfigurationValueType = string | number | boolean;
 

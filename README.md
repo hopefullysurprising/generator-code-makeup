@@ -70,6 +70,7 @@ All of them can be ran separately in any project.
 1. Add `typescript` as a dev dependency.
 1. Create `tsconfig.json`.
 1. Create `src` directory for source files.
+1. Add support of absolute paths (`@` means `src`).
 1. Set `module` and `moduleResolution` suitable for bundling the TS app.
 1. Enable `esModuleInterop`.
 
@@ -80,6 +81,7 @@ All of them can be ran separately in any project.
 1. Remove `ts-jest` from dependencies.
 1. Add `@swc/jest` as a dev dependency.
 1. Initiate Jest configuration.
+1. Setup TS absolute paths support in `@swc/jest`.
 1. Create `__tests__` folder for storing spec files.
 1. Set test script in `package.json`.
 

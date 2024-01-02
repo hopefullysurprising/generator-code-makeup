@@ -3,13 +3,13 @@ import Generator from 'yeoman-generator';
 import {
   NpmPackage,
   getDependencyInfoForInstalling,
-} from '../../utilities/dependenciesUtilities';
-import { logInfoMessage } from '../../utilities/loggingUtilities';
-import { GIT_KEEP_FILE_NAME } from '../../constants/serviceFileNamesAndPaths';
+} from '@/utilities/dependenciesUtilities';
+import { logInfoMessage } from '@/utilities/loggingUtilities';
+import { GIT_KEEP_FILE_NAME } from '@/constants/serviceFileNamesAndPaths';
+import { TYPESCRIPT_BASE_URL, TYPESCRIPT_PATHS, TYPESCRIPT_SOURCE_DIRECTORY } from '@/constants/systemDefaults';
 
 const TYPESCRIPT_MODULE = 'es2022';
 const TYPESCRIPT_MODULE_RESOLUTION = 'bundler';
-const TYPESCRIPT_SOURCE_DIRECTORY = 'src';
 
 export default class extends Generator {
 
@@ -77,6 +77,35 @@ export default class extends Generator {
     if (!tsConfig.compilerOptions.esModuleInterop) {
       logInfoMessage(this, 'Enabling esModuleInterop in tsconfig.json');
       tsConfig.compilerOptions.esModuleInterop = true;
+    }
+
+    this.fs.writeJSON(
+      this.typescriptConfigFilePath,
+      tsConfig,
+    );
+  }
+
+  setupAbsolutePaths() {
+    const tsConfig = this.fs.readJSON(this.typescriptConfigFilePath);
+
+    if (!tsConfig.compilerOptions) {
+      tsConfig.compilerOptions = {};
+    }
+
+    if (
+      !tsConfig.compilerOptions.baseUrl
+      || tsConfig.compilerOptions.baseUrl !== TYPESCRIPT_BASE_URL
+    ) {
+      logInfoMessage(this, 'Setting compilerOptions.baseUrl for absolute paths support in tsconfig.json');
+      tsConfig.compilerOptions.baseUrl = TYPESCRIPT_BASE_URL;
+    }
+
+    if (
+      !tsConfig.compilerOptions.paths
+      || JSON.stringify(tsConfig.compilerOptions.paths) !== JSON.stringify(TYPESCRIPT_PATHS)
+    ) {
+      logInfoMessage(this, 'Setting compilerOptions.paths for absolute paths support in tsconfig.json. Use "@/..." now');
+      tsConfig.compilerOptions.paths = TYPESCRIPT_PATHS;
     }
 
     this.fs.writeJSON(

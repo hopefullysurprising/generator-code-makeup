@@ -1,6 +1,6 @@
 import helpers, { result } from 'yeoman-test';
 
-import InitiateJestGenerator from '../src/generators/feature-initiate-jest';
+import InitiateJestGenerator from '@/generators/feature-initiate-jest';
 
 describe('initiating jest package', () => {
 
@@ -26,10 +26,28 @@ describe('initiating jest package', () => {
     expect(result.fs.exists('__tests__/.gitkeep')).toBeTruthy();
   });
 
+  /**
+   * Should be like this:
+   * ```
+   * "transform": {
+   * "^.+\\.(t|j)sx?$": [
+   *   "@swc/jest",
+   *   {
+   *     "jsc": {
+   *       "baseUrl": ".",
+   *       "paths": { "@/*": ["src/*"] }
+   *     }
+   *   }
+   * ]
+   * }
+  */
   it('should setup jest transform with ts compiler', () => {
     const jestConfig = result._readFile('jest.config.json', true);
     expect(jestConfig).toHaveProperty('transform');
-    expect(Object.values(jestConfig.transform)).toContain('@swc/jest');
+    const transformSettings = Object.values(jestConfig.transform);
+    const swcSettings = transformSettings[0];
+    expect(swcSettings[0]).toEqual('@swc/jest');
+    expect(swcSettings[1]['jsc']['paths']).not.toBeUndefined();
   });
 
 });

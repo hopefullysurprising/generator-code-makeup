@@ -1,6 +1,6 @@
 import helpers, { result } from 'yeoman-test';
 
-import PrettifyConfigurationFilesGenerator from '../src/generators/feature-prettify-configuration-files';
+import PrettifyConfigurationFilesGenerator from '@/generators/feature-prettify-configuration-files';
 
 describe('prettifying configuration files in project', () => {
 

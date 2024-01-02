@@ -1,4 +1,4 @@
-import { CodeDistributionType } from "../constants/projectWideInformation";
+import { CodeDistributionType } from "@/constants/projectWideInformation";
 
 // Configuration keys should not use "." character in their names
 // because it will be treated as a path separator in the configuration file.

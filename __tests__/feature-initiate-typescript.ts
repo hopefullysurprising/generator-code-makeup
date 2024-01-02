@@ -1,6 +1,6 @@
 import helpers, { result } from 'yeoman-test';
 
-import InitiateTypescriptGenerator from '../src/generators/feature-initiate-typescript';
+import InitiateTypescriptGenerator from '@/generators/feature-initiate-typescript';
 
 describe('initiating typescript package', () => {
   
@@ -27,6 +27,11 @@ describe('initiating typescript package', () => {
 
   it('should create a source code folder', () => {
     expect(result.fs.exists('src/.gitkeep')).toBeTruthy();
+  });
+
+  it('should setup absolute paths', () => {
+    result.assertJsonFileContent('tsconfig.json', { compilerOptions: { baseUrl: '.' } });
+    result.assertJsonFileContent('tsconfig.json', { compilerOptions: { paths: { '@/*': [ 'src/*' ] } } });
   });
 
 });
