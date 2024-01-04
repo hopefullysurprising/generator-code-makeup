@@ -30,7 +30,7 @@ var COMPANY_WIDE_INFORMATION = {
 function getUnambiguousTemplatePath(generator, templatePath) {
   const rawPath = generator.templatePath(templatePath);
   const paths = rawPath.split(":");
-  return paths.find((path) => path.includes(templatePath)) || rawPath;
+  return paths.find((path2) => path2.includes(templatePath)) || rawPath;
 }
 
 // src/utilities/loggingUtilities.ts
@@ -97,6 +97,49 @@ var CONFIGURATION_KEYS_INFO = {
   }
 };
 
+// src/utilities/globalConfigurationUtilities.ts
+import os from "os";
+import path from "path";
+
+// src/constants/systemDefaults.ts
+var TYPESCRIPT_BASE_URL = ".";
+var TYPESCRIPT_SOURCE_DIRECTORY = "src";
+var TYPESCRIPT_PATHS = {
+  "@/*": [`${TYPESCRIPT_SOURCE_DIRECTORY}/*`]
+};
+var PROFILES_FOLDER = ".code_generator_profiles";
+var DEFAULT_PROFILE_NAME = "default.json";
+
+// src/utilities/globalConfigurationUtilities.ts
+function getProfilePath(generator) {
+  if (generator) {
+    const specialProfilePath = generator.config.get("specialProfilePath");
+    if (specialProfilePath && typeof specialProfilePath === "string") {
+      return specialProfilePath;
+    }
+  }
+  const homeDirectory = os.homedir();
+  const profilesFolderPath = path.join(homeDirectory, PROFILES_FOLDER);
+  const defaultProfilePath = path.join(profilesFolderPath, DEFAULT_PROFILE_NAME);
+  return defaultProfilePath;
+}
+function getCurrentProfileConfiguration(generator) {
+  const defaultProfilePath = getProfilePath(generator);
+  if (!generator.fs.exists(defaultProfilePath)) {
+    generator.fs.writeJSON(defaultProfilePath, {});
+    logInfoMessage(generator, `
+      Created ${defaultProfilePath} for storing system-wide configuration.
+      Please, enable backup of this file in your backup software for smooth update experience.
+    `);
+  }
+  const fileContent = generator.fs.readJSON(defaultProfilePath);
+  return fileContent;
+}
+function writeCurrentProfileConfiguration(generator, configuration) {
+  const defaultProfilePath = getProfilePath(generator);
+  generator.fs.writeJSON(defaultProfilePath, configuration);
+}
+
 // src/utilities/configurationUtilities.ts
 async function getConfigurationValue(generator, configurationKey) {
   const configurationValueSettings = CONFIGURATION_KEYS_INFO[configurationKey];
@@ -140,12 +183,17 @@ async function getPromptValue(generator, name, promptSettings, storage) {
   return promptResult[name];
 }
 async function getProfileConfigurationValue(generator, configurationKey, promptSettings) {
+  const currentProfileConfiguration = getCurrentProfileConfiguration(generator);
+  if (currentProfileConfiguration[configurationKey]) {
+    return currentProfileConfiguration[configurationKey];
+  }
   const promptResult = await getPromptValue(
     generator,
     configurationKey,
-    promptSettings,
-    generator._globalConfig
+    promptSettings
   );
+  currentProfileConfiguration[configurationKey] = promptResult;
+  writeCurrentProfileConfiguration(generator, currentProfileConfiguration);
   return promptResult;
 }
 async function getPackageJsonConfigurationValue(generator, configurationKey, settings) {
@@ -285,13 +333,6 @@ function getDependencyInfoForInstalling(packageName) {
 
 // src/constants/serviceFileNamesAndPaths.ts
 var GIT_KEEP_FILE_NAME = ".gitkeep";
-
-// src/constants/systemDefaults.ts
-var TYPESCRIPT_BASE_URL = ".";
-var TYPESCRIPT_SOURCE_DIRECTORY = "src";
-var TYPESCRIPT_PATHS = {
-  "@/*": [`${TYPESCRIPT_SOURCE_DIRECTORY}/*`]
-};
 
 // src/generators/feature-initiate-typescript/index.ts
 var TYPESCRIPT_MODULE = "es2022";

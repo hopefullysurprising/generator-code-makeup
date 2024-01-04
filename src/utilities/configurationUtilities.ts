@@ -8,6 +8,7 @@ import {
   PromptConfigurationSettings,
   PackageJsonStorageConfigurationSettings,
 } from '@/utilities/configurationKeys';
+import { getCurrentProfileConfiguration, writeCurrentProfileConfiguration } from './globalConfigurationUtilities';
 
 type ConfigurationValueType = string | number | boolean;
 
@@ -72,12 +73,19 @@ async function getProfileConfigurationValue(
   configurationKey: ConfigurationKey,
   promptSettings: PromptConfigurationSettings,
 ): Promise<ConfigurationValueType> {
+  const currentProfileConfiguration = getCurrentProfileConfiguration(generator);
+  if (currentProfileConfiguration[configurationKey]) {
+    return currentProfileConfiguration[configurationKey];
+  }
+
   const promptResult = await getPromptValue(
     generator,
     configurationKey,
     promptSettings,
-    generator._globalConfig,
   );
+
+  currentProfileConfiguration[configurationKey] = promptResult;
+  writeCurrentProfileConfiguration(generator, currentProfileConfiguration);
   return promptResult;
 }
 

@@ -1,15 +1,19 @@
+import os from 'os';
+import path from 'path';
 import helpers, { result } from 'yeoman-test';
 
 import { CodeDistributionType } from '@/constants/projectWideInformation';
 
 import MakeupNodeAppGenerator from '@/generators/makeup-node-app';
 import { ConfigurationKey } from '@/utilities/configurationKeys';
+import { DEFAULT_PROFILE_NAME, PROFILES_FOLDER } from '@/constants/systemDefaults';
 
 describe('initiating a full node app', () => {
 
   describe('initiating an app only once', () => {
     
     beforeAll(async () => {
+      const defaultProfilePath = '.test_profile.json';
       await helpers
         .run(MakeupNodeAppGenerator as any)
         .withAnswers({
@@ -18,6 +22,12 @@ describe('initiating a full node app', () => {
           [ConfigurationKey.AUTHOR_NAME]: 'test-name',
           [ConfigurationKey.AUTHOR_EMAIL]: 'test-email',
           [ConfigurationKey.AUTHOR_URL]: 'test-url',
+        })
+        .withFiles({
+          'package.json': '{ "name": "test-package" }',
+        })
+        .withLocalConfig({
+          'specialProfilePath': defaultProfilePath,
         });
     });
   
@@ -38,20 +48,20 @@ describe('initiating a full node app', () => {
   describe('initiating an app with preserved configs and existing files', () => {
 
     beforeAll(async () => {
+      const defaultProfilePath = '.test_profile.json';
       await helpers
         .run(MakeupNodeAppGenerator as any)
         .withFiles({
           'package.json': '{ "name": "test-package" }',
-          '.yo-rc-global.json': `{
-            "*:0.0.0": {
-              "author_email": "test-email",
-              "author_name": "test-name",
-              "author_url": "test-url"
-            }
+          [defaultProfilePath]: `{
+            "author_name":"test-name",
+            "author_email":"test-email",
+            "author_url":"test-url"
           }`,
         })
         .withLocalConfig({
           [ConfigurationKey.CODE_DISTRIBUTION_TYPE]: CodeDistributionType.PROPRIETARY,
+          'specialProfilePath': defaultProfilePath,
         });
     });
 
