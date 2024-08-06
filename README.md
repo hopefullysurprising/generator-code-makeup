@@ -8,7 +8,7 @@ This project is currently at early stages of development and is expected to beco
 
 More info can be found in [Yeoman documentation](https://yeoman.io/learning/).
 
-```
+```bash
 npm install -g yo
 npm install -g generator-code-makeup
 ```
