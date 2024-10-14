@@ -85,6 +85,24 @@ export default class extends Generator {
     );
   }
 
+  setupTarget() {
+    const tsConfig = this.fs.readJSON(this.typescriptConfigFilePath);
+
+    if (!tsConfig.compilerOptions) {
+      tsConfig.compilerOptions = {};
+    }
+
+    if (!tsConfig.compilerOptions.target) {
+      logInfoMessage(this, 'Setting compilerOptions.target in tsconfig.json');
+      tsConfig.compilerOptions.target = 'es2022';
+    }
+
+    this.fs.writeJSON(
+      this.typescriptConfigFilePath,
+      tsConfig,
+    );
+  }
+
   setupAbsolutePaths() {
     const tsConfig = this.fs.readJSON(this.typescriptConfigFilePath);
 
