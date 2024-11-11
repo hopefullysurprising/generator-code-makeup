@@ -31,9 +31,8 @@ export default class extends Generator {
   private jestConfigFilePath: string;
   description = 'Configure Jest for unit testing';
 
-  constructor(args: string | string[], options: {}) {
+  constructor(args: string | string[], options: object) {
     super(args, options);
-    this.description
     this.jestConfigFilePath = this.destinationPath('jest.config.json');
   }
 
@@ -124,7 +123,7 @@ export default class extends Generator {
       logInfoMessage(this, `
         Creating tests folder: ${JEST_TESTS_FOLDER}.
         Using Jest default tests folder to be able to use TS project references in future: https://www.typescriptlang.org/docs/handbook/project-references.html.
-        That\'s why we are using separate folder and not mixing in .spec files.
+        That's why we are using separate folder and not mixing in .spec files.
         Also, this folder will contain .gitkeep file to make sure it is not ignored by Git.
       `);
       this.fs.write(testsFolderGitKeepPath, '');

@@ -85,6 +85,15 @@ All of them can be ran separately in any project.
 1. Create `__tests__` folder for storing spec files.
 1. Set test script in `package.json`.
 
+#### `feature-initiate-eslint`
+
+1. Add `eslint` as a dev dependency.
+1. Add `@eslint/js` as a dev dependency.
+1. Add `@types/eslint__js` as a dev dependency.
+1. Add `typescript-eslint` as a dev dependency.
+1. Initiate eslint configuration.
+1. Set lint script in `package.json`.
+
 #### `feature-prettify-configuration-files`
 
 1. Sort `package.json` with [sort-package-json](https://www.npmjs.com/package/sort-package-json).

@@ -16,7 +16,7 @@ export default class extends Generator {
       this.packageJson.writeContent(sortedPackageJsonContent);
       logInfoMessage(this, `
         There might be a message about a conflict in package.json.
-        That\'s fine and expected. The file was sorted. Approve it with "y" to overwrite.
+        That's fine and expected. The file was sorted. Approve it with "y" to overwrite.
       `);
     }
   }

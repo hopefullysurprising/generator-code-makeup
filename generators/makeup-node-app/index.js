@@ -1,5 +1,5 @@
 // src/generators/makeup-node-app/index.ts
-import Generator5 from "yeoman-generator";
+import Generator6 from "yeoman-generator";
 
 // src/generators/feature-initiate-npm-package/index.ts
 import Generator from "yeoman-generator";
@@ -322,8 +322,13 @@ var PACKAGE_VERSIONS = {
   // From 2023-12-19
   ["@swc/core" /* SWC_CORE */]: "1.3.101",
   // From 2023-12-24
-  ["@swc/jest" /* SWC_JEST */]: "0.2.29"
+  ["@swc/jest" /* SWC_JEST */]: "0.2.29",
   // From 2023-12-24
+  // Linting
+  ["eslint" /* ESLINT */]: "9.14.0",
+  ["@eslint/js" /* ESLINT_JS */]: "9.14.0",
+  ["@types/eslint__js" /* ESLINT_JS_TYPES */]: "8.42.3",
+  ["typescript-eslint" /* TYPESCRIPT_ESLINT */]: "8.13.0"
 };
 function getDependencyInfoForInstalling(packageName) {
   return {
@@ -396,6 +401,20 @@ var feature_initiate_typescript_default = class extends Generator2 {
       tsConfig
     );
   }
+  setupTarget() {
+    const tsConfig = this.fs.readJSON(this.typescriptConfigFilePath);
+    if (!tsConfig.compilerOptions) {
+      tsConfig.compilerOptions = {};
+    }
+    if (!tsConfig.compilerOptions.target) {
+      logInfoMessage(this, "Setting compilerOptions.target in tsconfig.json");
+      tsConfig.compilerOptions.target = "es2022";
+    }
+    this.fs.writeJSON(
+      this.typescriptConfigFilePath,
+      tsConfig
+    );
+  }
   setupAbsolutePaths() {
     const tsConfig = this.fs.readJSON(this.typescriptConfigFilePath);
     if (!tsConfig.compilerOptions) {
@@ -438,7 +457,6 @@ var feature_initiate_jest_default = class extends Generator3 {
   description = "Configure Jest for unit testing";
   constructor(args, options) {
     super(args, options);
-    this.description;
     this.jestConfigFilePath = this.destinationPath("jest.config.json");
   }
   initiateJestDependency() {
@@ -535,11 +553,60 @@ var feature_initiate_jest_default = class extends Generator3 {
   }
 };
 
-// src/generators/feature-prettify-configuration-files/index.ts
+// src/generators/feature-configure-eslint/index.ts
 import Generator4 from "yeoman-generator";
+var LINT_SCRIPT_COMMAND = "eslint src/";
+var feature_configure_eslint_default = class extends Generator4 {
+  eslintConfigFilePath = "eslint.config.js";
+  description = "Configure typescript-eslint";
+  installingEslint() {
+    const eslintDependency = getDependencyInfoForInstalling("eslint" /* ESLINT */);
+    this.addDevDependencies(eslintDependency);
+    const eslintJsDependency = getDependencyInfoForInstalling("@eslint/js" /* ESLINT_JS */);
+    this.addDevDependencies(eslintJsDependency);
+    const eslintJsTypesDependency = getDependencyInfoForInstalling("@types/eslint__js" /* ESLINT_JS_TYPES */);
+    this.addDevDependencies(eslintJsTypesDependency);
+    const tsEslintDependency = getDependencyInfoForInstalling("typescript-eslint" /* TYPESCRIPT_ESLINT */);
+    this.addDevDependencies(tsEslintDependency);
+  }
+  initiateEslintConfig() {
+    if (!this.fs.exists(this.eslintConfigFilePath)) {
+      this.fs.write(
+        this.eslintConfigFilePath,
+        `
+import eslint from '@eslint/js';
+import tseslint from 'typescript-eslint';
+
+export default tseslint.config(
+  eslint.configs.recommended,
+  ...tseslint.configs.recommended,
+);
+        `
+      );
+      logInfoMessage(this, `Created ${this.eslintConfigFilePath}`);
+    }
+  }
+  addScriptToPackageJson() {
+    let packageJsonScripts = this.packageJson.get("scripts");
+    if (!packageJsonScripts) {
+      packageJsonScripts = {};
+    }
+    if (!packageJsonScripts["lint"] || packageJsonScripts["lint"] !== LINT_SCRIPT_COMMAND) {
+      logInfoMessage(this, `
+        Updating package.json to include lint script: ${LINT_SCRIPT_COMMAND}.
+        Previous test script: ${packageJsonScripts["lint"]}.
+      `);
+      packageJsonScripts["lint"] = LINT_SCRIPT_COMMAND;
+      this.packageJson.set("scripts", packageJsonScripts);
+    }
+  }
+};
+
+// src/generators/feature-prettify-configuration-files/index.ts
+import Generator5 from "yeoman-generator";
 import sortPackageJson from "sort-package-json";
 import sortJson from "sort-json";
-var feature_prettify_configuration_files_default = class extends Generator4 {
+var feature_prettify_configuration_files_default = class extends Generator5 {
   description = "Prettify configuration files";
   sortPackageJson() {
     const packageJsonExists = this.packageJson.existed;
@@ -572,7 +639,7 @@ var feature_prettify_configuration_files_default = class extends Generator4 {
 };
 
 // src/generators/makeup-node-app/index.ts
-var makeup_node_app_default = class extends Generator5 {
+var makeup_node_app_default = class extends Generator6 {
   initializing() {
     this.composeWith({
       Generator: feature_initiate_npm_package_default,
@@ -585,6 +652,10 @@ var makeup_node_app_default = class extends Generator5 {
     this.composeWith({
       Generator: feature_initiate_jest_default,
       path: "../feature-initiate-jest"
+    });
+    this.composeWith({
+      Generator: feature_configure_eslint_default,
+      path: "../feature-configure-eslint"
     });
     this.composeWith({
       Generator: feature_prettify_configuration_files_default,

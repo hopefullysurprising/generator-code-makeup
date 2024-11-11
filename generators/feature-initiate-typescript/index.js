@@ -11,8 +11,13 @@ var PACKAGE_VERSIONS = {
   // From 2023-12-19
   ["@swc/core" /* SWC_CORE */]: "1.3.101",
   // From 2023-12-24
-  ["@swc/jest" /* SWC_JEST */]: "0.2.29"
+  ["@swc/jest" /* SWC_JEST */]: "0.2.29",
   // From 2023-12-24
+  // Linting
+  ["eslint" /* ESLINT */]: "9.14.0",
+  ["@eslint/js" /* ESLINT_JS */]: "9.14.0",
+  ["@types/eslint__js" /* ESLINT_JS_TYPES */]: "8.42.3",
+  ["typescript-eslint" /* TYPESCRIPT_ESLINT */]: "8.13.0"
 };
 function getDependencyInfoForInstalling(packageName) {
   return {
@@ -107,6 +112,20 @@ var feature_initiate_typescript_default = class extends Generator {
     if (!tsConfig.compilerOptions.esModuleInterop) {
       logInfoMessage(this, "Enabling esModuleInterop in tsconfig.json");
       tsConfig.compilerOptions.esModuleInterop = true;
+    }
+    this.fs.writeJSON(
+      this.typescriptConfigFilePath,
+      tsConfig
+    );
+  }
+  setupTarget() {
+    const tsConfig = this.fs.readJSON(this.typescriptConfigFilePath);
+    if (!tsConfig.compilerOptions) {
+      tsConfig.compilerOptions = {};
+    }
+    if (!tsConfig.compilerOptions.target) {
+      logInfoMessage(this, "Setting compilerOptions.target in tsconfig.json");
+      tsConfig.compilerOptions.target = "es2022";
     }
     this.fs.writeJSON(
       this.typescriptConfigFilePath,

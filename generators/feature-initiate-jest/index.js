@@ -12,8 +12,13 @@ var PACKAGE_VERSIONS = {
   // From 2023-12-19
   ["@swc/core" /* SWC_CORE */]: "1.3.101",
   // From 2023-12-24
-  ["@swc/jest" /* SWC_JEST */]: "0.2.29"
+  ["@swc/jest" /* SWC_JEST */]: "0.2.29",
   // From 2023-12-24
+  // Linting
+  ["eslint" /* ESLINT */]: "9.14.0",
+  ["@eslint/js" /* ESLINT_JS */]: "9.14.0",
+  ["@types/eslint__js" /* ESLINT_JS_TYPES */]: "8.42.3",
+  ["typescript-eslint" /* TYPESCRIPT_ESLINT */]: "8.13.0"
 };
 function getDependencyInfoForInstalling(packageName) {
   return {
@@ -72,7 +77,6 @@ var feature_initiate_jest_default = class extends Generator {
   description = "Configure Jest for unit testing";
   constructor(args, options) {
     super(args, options);
-    this.description;
     this.jestConfigFilePath = this.destinationPath("jest.config.json");
   }
   initiateJestDependency() {
