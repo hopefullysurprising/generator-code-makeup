@@ -17,6 +17,7 @@ export enum NpmPackage {
   ESLINT_JS = '@eslint/js',
   ESLINT_JS_TYPES = '@types/eslint__js',
   TYPESCRIPT_ESLINT = 'typescript-eslint',
+  STYLISTIC_TYPESCRIPT = '@stylistic/eslint-plugin-ts',
 }
 
 const PACKAGE_VERSIONS: Record<NpmPackage, string> = {
@@ -33,6 +34,7 @@ const PACKAGE_VERSIONS: Record<NpmPackage, string> = {
   [NpmPackage.ESLINT_JS]: '9.14.0',
   [NpmPackage.ESLINT_JS_TYPES]: '8.42.3',
   [NpmPackage.TYPESCRIPT_ESLINT]: '8.13.0',
+  [NpmPackage.STYLISTIC_TYPESCRIPT]: '2.10.1',
 }
 
 export function getDependencyInfoForInstalling(
