@@ -30,10 +30,10 @@ const PACKAGE_VERSIONS: Record<NpmPackage, string> = {
   [NpmPackage.SWC_JEST]: '0.2.29', // From 2023-12-24
   
   // Linting
-  [NpmPackage.ESLINT]: '9.14.0',
-  [NpmPackage.ESLINT_JS]: '9.14.0',
+  [NpmPackage.ESLINT]: '9.15.0',
+  [NpmPackage.ESLINT_JS]: '9.15.0',
   [NpmPackage.ESLINT_JS_TYPES]: '8.42.3',
-  [NpmPackage.TYPESCRIPT_ESLINT]: '8.13.0',
+  [NpmPackage.TYPESCRIPT_ESLINT]: '8.15.0',
   [NpmPackage.STYLISTIC_TYPESCRIPT]: '2.10.1',
 }
 
